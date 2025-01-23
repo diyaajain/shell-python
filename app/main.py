@@ -5,7 +5,6 @@ import sys
 def main():
     while True:  # Use a loop to keep the program running until 'exit 0' is entered
         command = input()
-
         if command == "exit 0":
             return 0  # Exit the program
 
