@@ -1,4 +1,5 @@
 import sys
+import os
 
 # List of shell builtins
 SHELL_BUILTINS = ["echo", "exit", "type"]
@@ -18,10 +19,24 @@ def main():
         if parts[0] == "type":
             if len(parts) > 1:  # Check if an argument is provided
                 cmd_to_check = parts[1]
+                
+                # First, check if it's a built-in command
                 if cmd_to_check in SHELL_BUILTINS:
                     print(f"{cmd_to_check} is a shell builtin")
                 else:
-                    print(f"{cmd_to_check}: not found")
+                    # Check if the command is an executable file in the PATH
+                    path_dirs = os.environ.get("PATH", "").split(":")
+                    found = False
+                    
+                    for dir in path_dirs:
+                        command_path = os.path.join(dir, cmd_to_check)
+                        if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
+                            print(f"{cmd_to_check} is {command_path}")
+                            found = True
+                            break
+                    
+                    if not found:
+                        print(f"{cmd_to_check}: not found")
             else:
                 print("type: missing operand")  # Handle missing operand for `type`
         
