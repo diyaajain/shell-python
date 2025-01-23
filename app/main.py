@@ -23,19 +23,20 @@ def handle_type_command(command_name):
 
 def handle_external_program(parts):
     """Handles running an external program and printing the output as required"""
+    command_name = parts[0]  # The name of the command (e.g., custom_exe_4109)
     path_dirs = os.environ.get("PATH", "").split(":")
     found = False
     for directory in path_dirs:
-        command_path = os.path.join(directory, parts[0])
+        command_path = os.path.join(directory, command_name)
         if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
             # Run the program with arguments and capture the output
-            result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
+            result = subprocess.run([command_name] + parts[1:], capture_output=True, text=True)
             print(result.stdout.strip())  # Output from the external program (signature)
             found = True
             break
 
     if not found:
-        print(f"{parts[0]}: command not found")
+        print(f"{command_name}: command not found")
 
 def main():
     while True:
