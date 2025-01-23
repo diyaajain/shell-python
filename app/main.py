@@ -9,7 +9,7 @@ def main():
             return 0  # Exit the program
 
         #print(f"{command}: command not found")
-        print(f"echo {command}")
+        print(f"{command}")
 
 if __name__ == "__main__":
     main()
