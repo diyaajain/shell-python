@@ -53,10 +53,10 @@ def handle_cd_command(path):
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
 def parse_command(command):
-    """Parses the command into parts, handling single quotes"""
+    """Parses the command into parts, handling single and double quotes"""
     lexer = shlex.shlex(command, posix=True)
     lexer.whitespace_split = True
-    lexer.quotes = "'"  # Treat single quotes as quoting characters
+    lexer.quotes = '"'  # Treat double quotes as quoting characters
     return list(lexer)
 
 def main():
@@ -70,7 +70,7 @@ def main():
         if len(command) == 0:
             continue  # Skip empty input
 
-        # Parse the command into parts, handling single quotes
+        # Parse the command into parts, handling single and double quotes
         parts = parse_command(command)
 
         # Handle 'type' command
