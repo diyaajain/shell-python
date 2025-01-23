@@ -1,9 +1,9 @@
 import sys
 
+sys.stdout.write("$ ")
+
 def main():
     while True:  # Use a loop to keep the program running until 'exit 0' is entered
-        sys.stdout.write("$ ")
-
         command = input()
 
         if command == "0":
