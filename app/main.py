@@ -5,11 +5,13 @@ def main():
     sys.stdout.write("$ ")
 
     # Wait for user input
-    while input == 0:
-        command = input()
-        print(f"{command}: command not found")
-        main()
+    
+    command = input()
+    print(f"{command}: command not found")
+    main()
 
+    if (input == 0):
+        return 0
 
 if __name__ == "__main__":
     main()
