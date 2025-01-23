@@ -15,7 +15,7 @@ def handle_type_command(command_name):
         for directory in path_dirs:
             command_path = os.path.join(directory, command_name)
             if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
-                print(f"{command_name} is {command_name}")
+                print(f"{command_name} is {command_path}")  # Print the full path
                 found = True
                 break
         if not found:
