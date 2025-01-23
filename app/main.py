@@ -1,5 +1,6 @@
 import os
 import subprocess
+import shlex
 
 # List of built-in commands (for this stage: type, echo, exit, pwd, cd)
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
@@ -52,43 +53,17 @@ def handle_cd_command(path):
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
 def parse_command(command):
-    """Custom command parser to handle single quotes, double quotes, backslashes, and unquoted arguments"""
-    parts = []
-    current_part = ""
-    in_single_quotes = False
-    in_double_quotes = False
-    escape_next = False
+    """Parses the command into parts using shlex, handling quotes and backslashes"""
+    lexer = shlex.shlex(command, posix=True)
+    lexer.whitespace_split = True
+    lexer.quotes = '"'  # Treat double quotes as quoting characters
+    lexer.whitespace = ' \t\n'  # Treat spaces, tabs, and newlines as whitespace
+    parts = list(lexer)
 
-    for char in command:
-        if escape_next:
-            # If the next character is escaped, add it to the current part
-            current_part += char
-            escape_next = False
-        elif char == "\\":
-            if in_single_quotes:
-                # Inside single quotes, backslashes are treated as literal
-                current_part += char
-            else:
-                # Outside single quotes, backslashes escape the next character
-                escape_next = True
-        elif char == "'" and not in_double_quotes:
-            # Toggle single quotes
-            in_single_quotes = not in_single_quotes
-        elif char == '"' and not in_single_quotes:
-            # Toggle double quotes
-            in_double_quotes = not in_double_quotes
-        elif char.isspace() and not (in_single_quotes or in_double_quotes):
-            # If a space is encountered outside quotes, finalize the current part
-            if current_part:
-                parts.append(current_part)
-                current_part = ""
-        else:
-            # Add the character to the current part
-            current_part += char
-
-    # Add the last part if it exists
-    if current_part:
-        parts.append(current_part)
+    # Remove single quotes from the parsed parts
+    for i, part in enumerate(parts):
+        if part.startswith("'") and part.endswith("'"):
+            parts[i] = part[1:-1]  # Remove the single quotes
 
     return parts
 
