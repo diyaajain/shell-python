@@ -62,11 +62,8 @@ def main():
                     try:
                         result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
                         # Print output from the program
-                        output = result.stdout.splitlines()
-                        
-                        # Modify output for Arg #0 to only show the program name (not the full path)
-                        output[0] = output[0].replace(command_name, parts[0])
-                        print("\n".join(output))  # Print the modified output
+                        output = result.stdout.strip()  # Ensure no extra newlines or spaces
+                        print(output)  # Print the output directly
                     except Exception as e:
                         print(f"Error running the command: {e}")
                     found = True
