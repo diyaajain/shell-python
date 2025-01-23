@@ -1,6 +1,5 @@
 import os
 import subprocess
-import shlex
 
 # List of built-in commands (for this stage: type, echo, exit, pwd, cd)
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
@@ -53,17 +52,32 @@ def handle_cd_command(path):
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
 def parse_command(command):
-    """Parses the command into parts, handling single and double quotes"""
-    lexer = shlex.shlex(command, posix=True)
-    lexer.whitespace_split = True
-    lexer.quotes = '"'  # Treat double quotes as quoting characters
-    lexer.whitespace = ' \t\n'  # Treat spaces, tabs, and newlines as whitespace
-    parts = list(lexer)
+    """Custom command parser to handle single quotes, double quotes, and unquoted arguments"""
+    parts = []
+    current_part = ""
+    in_single_quotes = False
+    in_double_quotes = False
+    escape_next = False
 
-    # Remove single quotes from the parsed parts
-    for i, part in enumerate(parts):
-        if part.startswith("'") and part.endswith("'"):
-            parts[i] = part[1:-1]  # Remove the single quotes
+    for char in command:
+        if escape_next:
+            current_part += char
+            escape_next = False
+        elif char == "\\":
+            escape_next = True
+        elif char == "'" and not in_double_quotes:
+            in_single_quotes = not in_single_quotes
+        elif char == '"' and not in_single_quotes:
+            in_double_quotes = not in_double_quotes
+        elif char.isspace() and not (in_single_quotes or in_double_quotes):
+            if current_part:
+                parts.append(current_part)
+                current_part = ""
+        else:
+            current_part += char
+
+    if current_part:
+        parts.append(current_part)
 
     return parts
 
