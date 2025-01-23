@@ -64,13 +64,13 @@ def main():
                         # Print output from the program
                         output = result.stdout.strip()  # Ensure no extra newlines or spaces
 
-                        # Ensure that we print the expected output in the correct format
+                        # Print expected output in the correct format
                         print(f"Program was passed {len(parts)} args (including program name).")
                         print(f"Arg #0 (program name): {command_name}")
                         for i, arg in enumerate(parts[1:], start=1):
                             print(f"Arg #{i}: {arg}")
 
-                        # Only print the signature once
+                        # Ensure that we print the expected output in the correct format
                         print(output)  # The program's signature will likely be in the output
                     except Exception as e:
                         print(f"Error running the command: {e}")
