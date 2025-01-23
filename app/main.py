@@ -1,17 +1,16 @@
 import sys
 
 def main():
-    # Uncomment this block to pass the first stage
-    sys.stdout.write("$ ")
+    while True:  # Use a loop to keep the program running until 'exit 0' is entered
+        sys.stdout.write("$ ")
 
-    # Wait for user input
-    
-    command = input()
-    print(f"{command}: command not found")
-    main()
+        command = input()
 
-    if (input == 'exit 0'):
-        return 0
+        if command == "exit 0":
+            return 0  # Exit the program
+
+        print(f"{command}: command not found")
+        main()
 
 if __name__ == "__main__":
     main()
