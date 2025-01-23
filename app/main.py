@@ -57,6 +57,7 @@ def parse_command(command):
     lexer = shlex.shlex(command, posix=True)
     lexer.whitespace_split = True
     lexer.quotes = '"'  # Treat double quotes as quoting characters
+    lexer.whitespace = ' \t\n'  # Treat spaces, tabs, and newlines as whitespace
     parts = list(lexer)
 
     # Remove single quotes from the parsed parts
