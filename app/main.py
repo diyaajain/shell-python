@@ -4,12 +4,12 @@ import sys
 
 def main():
     while True:  # Use a loop to keep the program running until 'exit 0' is entered
-        command = input("$ echo ")
+        command = input("$ ")
         if command == "exit 0":
             return 0  # Exit the program
 
         #print(f"{command}: command not found")
-        print(f"{command}")
+        print(f"echo {command}")
 
 if __name__ == "__main__":
     main()
