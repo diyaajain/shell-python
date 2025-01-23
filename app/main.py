@@ -41,7 +41,7 @@ def handle_external_program(parts):
 def handle_cd_command(path):
     """Handles the 'cd' command to change the current working directory"""
     try:
-        os.chdir(path)  # Change the directory
+        os.chdir(path)  # Change the directory (handles both absolute and relative paths)
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
