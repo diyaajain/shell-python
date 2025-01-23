@@ -32,7 +32,8 @@ def main():
                     for dir in path_dirs:
                         command_path = os.path.join(dir, cmd_to_check)
                         if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
-                            print(f"{cmd_to_check} is {command_path}")
+                            # Use just the executable name, not the full path
+                            print(f"{cmd_to_check} is {cmd_to_check}")
                             found = True
                             break
                     
