@@ -69,6 +69,8 @@ def main():
                         print(f"Arg #0 (program name): {command_name}")
                         for i, arg in enumerate(parts[1:], start=1):
                             print(f"Arg #{i}: {arg}")
+
+                        # Only print the signature once
                         print(output)  # The program's signature will likely be in the output
                     except Exception as e:
                         print(f"Error running the command: {e}")
