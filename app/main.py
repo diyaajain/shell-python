@@ -55,10 +55,18 @@ def main():
             for dir in path_dirs:
                 command_path = os.path.join(dir, parts[0])
                 if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
+                    # Extract the base name of the command (without the path)
+                    command_name = os.path.basename(command_path)
+                    
                     # Execute the program with arguments
                     try:
                         result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
-                        print(result.stdout)  # Print the output of the program
+                        # Print output from the program
+                        output = result.stdout.splitlines()
+                        
+                        # Modify output for Arg #0 to only show the program name (not the full path)
+                        output[0] = output[0].replace(command_name, parts[0])
+                        print("\n".join(output))  # Print the modified output
                     except Exception as e:
                         print(f"Error running the command: {e}")
                     found = True
