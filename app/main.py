@@ -6,7 +6,7 @@ def main():
 
         command = input()
 
-        if command == "exit 0":
+        if command == "0":
             return 0  # Exit the program
 
         print(f"{command}: command not found")
