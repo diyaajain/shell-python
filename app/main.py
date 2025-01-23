@@ -65,7 +65,7 @@ def main():
                         output = result.stdout.strip()  # Ensure no extra newlines or spaces
 
                         # Print in the expected format
-                        #print(f"Program was passed {len(parts)} args (including program name).")
+                        print(f"Program was passed {len(parts)} args (including program name).")
                         print(f"Arg #0 (program name): {command_name}")
                         for i, arg in enumerate(parts[1:], start=1):
                             print(f"Arg #{i}: {arg}")
