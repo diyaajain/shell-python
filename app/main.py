@@ -57,7 +57,14 @@ def parse_command(command):
     lexer = shlex.shlex(command, posix=True)
     lexer.whitespace_split = True
     lexer.quotes = '"'  # Treat double quotes as quoting characters
-    return list(lexer)
+    parts = list(lexer)
+
+    # Remove single quotes from the parsed parts
+    for i, part in enumerate(parts):
+        if part.startswith("'") and part.endswith("'"):
+            parts[i] = part[1:-1]  # Remove the single quotes
+
+    return parts
 
 def main():
     while True:
