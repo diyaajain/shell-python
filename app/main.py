@@ -65,8 +65,12 @@ def parse_command(command):
             current_part += char
             escape_next = False
         elif char == "\\":
-            # If a backslash is encountered, escape the next character
-            escape_next = True
+            if in_single_quotes:
+                # Inside single quotes, backslashes are treated as literal
+                current_part += char
+            else:
+                # Outside single quotes, backslashes escape the next character
+                escape_next = True
         elif char == "'" and not in_double_quotes:
             # Toggle single quotes
             in_single_quotes = not in_single_quotes
