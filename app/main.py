@@ -28,11 +28,6 @@ def handle_external_program(parts):
     for directory in path_dirs:
         command_path = os.path.join(directory, parts[0])
         if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
-            # Print the program name and arguments in the required format
-            print(f"Program was passed {len(parts)} args (including program name).")
-            print(f"Arg #0 (program name): {parts[0]}")  # Print the program name
-            for i, arg in enumerate(parts[1:], start=1):
-                print(f"Arg #{i}: {arg}")
             # Run the program with arguments and capture the output
             result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
             print(result.stdout.strip())  # Output from the external program (signature)
