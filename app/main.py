@@ -1,84 +1,72 @@
-import sys
 import os
 import subprocess
 
-SHELL_BUILTINS = ["echo", "exit", "type"]
+# List of built-in commands (for this stage: type, echo, exit)
+BUILTINS = ["echo", "exit", "type"]
+
+def handle_type_command(command_name):
+    """Handles the 'type' command and checks if it's a builtin or executable in PATH"""
+    if command_name in BUILTINS:
+        print(f"{command_name} is a shell builtin")
+    else:
+        # Check if it's an executable in the PATH
+        path_dirs = os.environ.get("PATH", "").split(":")
+        found = False
+        for directory in path_dirs:
+            command_path = os.path.join(directory, command_name)
+            if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
+                print(f"{command_name} is {command_name}")
+                found = True
+                break
+        if not found:
+            print(f"{command_name}: not found")
+
+def handle_external_program(parts):
+    """Handles running an external program and printing the output as required"""
+    path_dirs = os.environ.get("PATH", "").split(":")
+    found = False
+    for directory in path_dirs:
+        command_path = os.path.join(directory, parts[0])
+        if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
+            # Print the program name and arguments in the required format
+            print(f"Program was passed {len(parts)} args (including program name).")
+            print(f"Arg #0 (program name): {parts[0]}")  # Print the program name
+            for i, arg in enumerate(parts[1:], start=1):
+                print(f"Arg #{i}: {arg}")
+            # Run the program with arguments and capture the output
+            result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
+            print(result.stdout.strip())  # Output from the external program (signature)
+            found = True
+            break
+
+    if not found:
+        print(f"{parts[0]}: command not found")
 
 def main():
     while True:
-        command = input("$ ")
+        command = input("$ ").strip()  # Get the user input
+        parts = command.split()  # Split the command into parts
 
         # Exit condition
         if command == "exit 0":
             return 0
 
-        # Split the command into parts
-        parts = command.split()
+        if len(parts) == 0:
+            continue  # Skip empty input
 
-        # Handle the `type` command
+        # Handle 'type' command
         if parts[0] == "type":
-            if len(parts) > 1:  # Check if an argument is provided
-                cmd_to_check = parts[1]
-
-                # First, check if it's a built-in command
-                if cmd_to_check in SHELL_BUILTINS:
-                    print(f"{cmd_to_check} is a shell builtin")
-                else:
-                    # Check if the command is an executable file in the PATH
-                    path_dirs = os.environ.get("PATH", "").split(":")
-                    found = False
-
-                    for dir in path_dirs:
-                        command_path = os.path.join(dir, cmd_to_check)
-                        if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
-                            # Use just the executable name, not the full path
-                            print(f"{cmd_to_check} is {cmd_to_check}")
-                            found = True
-                            break
-
-                    if not found:
-                        print(f"{cmd_to_check}: not found")
+            if len(parts) > 1:
+                handle_type_command(parts[1])  # Handle 'type' for a specific command
             else:
-                print("type: missing operand")  # Handle missing operand for `type`
+                print("type: missing operand")
 
-        # Handle the `echo` command
+        # Handle external commands
         elif parts[0] == "echo":
-            # Print everything after "echo"
-            print(" ".join(parts[1:]))
+            print(" ".join(parts[1:]))  # Print everything after 'echo'
 
-        # Handle unrecognized commands
         else:
-            # Check if it's an executable and run it
-            path_dirs = os.environ.get("PATH", "").split(":")
-            found = False
-
-            for dir in path_dirs:
-                command_path = os.path.join(dir, parts[0])
-                if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
-                    # Extract the base name of the command (without the path)
-                    command_name = os.path.basename(command_path)
-
-                    # Execute the program with arguments
-                    try:
-                        result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
-                        # Print output from the program
-                        output = result.stdout.strip()  # Ensure no extra newlines or spaces
-
-                        # Print expected output in the correct format
-                        print(f"Program was passed {len(parts)} args (including program name).")
-                        print(f"Arg #0 (program name): {command_name}")
-                        for i, arg in enumerate(parts[1:], start=1):
-                            print(f"Arg #{i}: {arg}")
-
-                        # Ensure that we print the expected output in the correct format
-                        print(output)  # The program's signature will likely be in the output
-                    except Exception as e:
-                        print(f"Error running the command: {e}")
-                    found = True
-                    break
-
-            if not found:
-                print(f"{command}: command not found")
+            handle_external_program(parts)  # Handle unknown commands (external programs)
 
 if __name__ == "__main__":
     main()
