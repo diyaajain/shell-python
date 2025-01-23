@@ -64,6 +64,8 @@ def main():
                         result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
                         # Print output from the program
                         output = result.stdout.strip()  # Ensure no extra newlines or spaces
+                        print(f"Arg #0 (program name): {command_name}")  # Print just the executable name
+                        print(f"Arg #1: {parts[1]}")  # Print the first argument
                         print(output)  # Print the output directly
                     except Exception as e:
                         print(f"Error running the command: {e}")
