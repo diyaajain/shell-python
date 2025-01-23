@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 # List of shell builtins
 SHELL_BUILTINS = ["echo", "exit", "type"]
@@ -47,7 +48,24 @@ def main():
         
         # Handle unrecognized commands
         else:
-            print(f"{command}: command not found")
+            # Check if it's an executable and run it
+            path_dirs = os.environ.get("PATH", "").split(":")
+            found = False
+            
+            for dir in path_dirs:
+                command_path = os.path.join(dir, parts[0])
+                if os.path.isfile(command_path) and os.access(command_path, os.X_OK):
+                    # Execute the program with arguments
+                    try:
+                        result = subprocess.run([command_path] + parts[1:], capture_output=True, text=True)
+                        print(result.stdout)  # Print the output of the program
+                    except Exception as e:
+                        print(f"Error running the command: {e}")
+                    found = True
+                    break
+            
+            if not found:
+                print(f"{command}: command not found")
 
 if __name__ == "__main__":
     main()
