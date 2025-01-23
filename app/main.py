@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-# List of built-in commands (for this stage: type, echo, exit)
-BUILTINS = ["echo", "exit", "type"]
+# List of built-in commands (for this stage: type, echo, exit, pwd)
+BUILTINS = ["echo", "exit", "type", "pwd"]
 
 def handle_type_command(command_name):
     """Handles the 'type' command and checks if it's a builtin or executable in PATH"""
@@ -57,10 +57,15 @@ def main():
             else:
                 print("type: missing operand")
 
-        # Handle external commands
+        # Handle 'pwd' command
+        elif parts[0] == "pwd":
+            print(os.getcwd())  # Print the current working directory
+
+        # Handle 'echo' command
         elif parts[0] == "echo":
             print(" ".join(parts[1:]))  # Print everything after 'echo'
 
+        # Handle external commands
         else:
             handle_external_program(parts)  # Handle unknown commands (external programs)
 
