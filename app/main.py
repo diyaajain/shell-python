@@ -1,5 +1,6 @@
 import os
 import subprocess
+import shlex
 
 # List of built-in commands (for this stage: type, echo, exit, pwd, cd)
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
@@ -51,17 +52,26 @@ def handle_cd_command(path):
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
+def parse_command(command):
+    """Parses the command into parts, handling single quotes"""
+    lexer = shlex.shlex(command, posix=True)
+    lexer.whitespace_split = True
+    lexer.quotes = "'"  # Treat single quotes as quoting characters
+    return list(lexer)
+
 def main():
     while True:
         command = input("$ ").strip()  # Get the user input
-        parts = command.split()  # Split the command into parts
 
         # Exit condition
         if command == "exit 0":
             return 0
 
-        if len(parts) == 0:
+        if len(command) == 0:
             continue  # Skip empty input
+
+        # Parse the command into parts, handling single quotes
+        parts = parse_command(command)
 
         # Handle 'type' command
         if parts[0] == "type":
