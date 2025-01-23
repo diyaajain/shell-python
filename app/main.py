@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-# List of built-in commands (for this stage: type, echo, exit, pwd)
-BUILTINS = ["echo", "exit", "type", "pwd"]
+# List of built-in commands (for this stage: type, echo, exit, pwd, cd)
+BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
 
 def handle_type_command(command_name):
     """Handles the 'type' command and checks if it's a builtin or executable in PATH"""
@@ -38,6 +38,13 @@ def handle_external_program(parts):
     if not found:
         print(f"{command_name}: command not found")
 
+def handle_cd_command(path):
+    """Handles the 'cd' command to change the current working directory"""
+    try:
+        os.chdir(path)  # Change the directory
+    except FileNotFoundError:
+        print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
+
 def main():
     while True:
         command = input("$ ").strip()  # Get the user input
@@ -60,6 +67,13 @@ def main():
         # Handle 'pwd' command
         elif parts[0] == "pwd":
             print(os.getcwd())  # Print the current working directory
+
+        # Handle 'cd' command
+        elif parts[0] == "cd":
+            if len(parts) > 1:
+                handle_cd_command(parts[1])  # Handle 'cd' with the provided path
+            else:
+                print("cd: missing operand")  # Handle case where no path is provided
 
         # Handle 'echo' command
         elif parts[0] == "echo":
