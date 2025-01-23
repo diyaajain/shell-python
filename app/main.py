@@ -40,8 +40,14 @@ def handle_external_program(parts):
 
 def handle_cd_command(path):
     """Handles the 'cd' command to change the current working directory"""
+    # Replace ~ with the value of the HOME environment variable
+    if path == "~":
+        path = os.environ.get("HOME")
+    elif path.startswith("~/"):
+        path = os.path.join(os.environ.get("HOME"), path[2:])
+
     try:
-        os.chdir(path)  # Change the directory (handles both absolute and relative paths)
+        os.chdir(path)  # Change the directory (handles absolute, relative, and ~ paths)
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")  # Print error if directory doesn't exist
 
@@ -73,7 +79,8 @@ def main():
             if len(parts) > 1:
                 handle_cd_command(parts[1])  # Handle 'cd' with the provided path
             else:
-                print("cd: missing operand")  # Handle case where no path is provided
+                # If no path is provided, default to the home directory
+                handle_cd_command("~")
 
         # Handle 'echo' command
         elif parts[0] == "echo":
